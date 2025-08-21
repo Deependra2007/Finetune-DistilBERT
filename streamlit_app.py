@@ -4,7 +4,10 @@ from transformers import pipeline
 # Initialize QA pipeline
 @st.cache_resource
 def load_qa_pipeline():
-    return pipeline("question-answering", model="distilbert-base-cased-distilled-squad")
+    model_path = "./distilbert-qa-finetuned"  # Use relative path
+    tokenizer = DistilBertTokenizerFast.from_pretrained(model_path)
+    model = DistilBertForQuestionAnswering.from_pretrained(model_path)
+    return pipeline("question-answering", model=model, tokenizer=tokenizer)
 
 qa_pipeline = load_qa_pipeline()
 
