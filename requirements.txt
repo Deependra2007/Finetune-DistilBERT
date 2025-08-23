@@ -1,3 +1,7 @@
 streamlit
 transformers
 torch
+python-docx
+faiss-cpu
+sentence-transformers
+rank-bm25
