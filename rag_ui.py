@@ -1,12 +1,14 @@
 import streamlit as st
 import time
-
+from convai_group_111_rag_vs+ft import RAGConfig,CompleteRAGPipeline,RAGStreamLit
 def run():
     # Page config
     st.set_page_config(layout="wide")
     st.title("Advanced RAG System with Multi-Stage Retrieval")
     st.caption("This system uses Multi-Stage Retrieval: Stage 1 hybrid search (Dense + BM25), Stage 2 cross-encoder re-ranking. Includes guardrails and performance monitoring.")
     # --- Index Documents ---
+    cfg = RAGConfig()
+    pipeline = CompleteRAGPipeline(cfg)
     with st.container():
         st.subheader("Index Documents")
         uploaded_file = st.file_uploader("Upload .txt or .docx or .pdf files", type=["txt", "docx", "pdf"])
@@ -20,8 +22,9 @@ def run():
         guardrails_enabled = st.checkbox("Enable Guardrails", value=True)
         if st.button("Index Documents"):
             with st.spinner("Indexing..."):
-                time.sleep(2)  # Mocking delay
-                st.success("Indexed 1165 files into 792 chunks.")
+                streamLit = RAGStreamLit(pipeline)
+                message = streamLit.index_documents(uploaded_file, chunk_size, chunk_overlap, guardrails_enabled)
+                st.success(message)
 
         with st.expander("Indexing Status", expanded=True):
             st.text("Indexed 1165 files into 792 chunks.")
