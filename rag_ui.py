@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-from convai_group_111_rag_vs+ft import RAGConfig,CompleteRAGPipeline,RAGStreamLit
+from convai_group_111_rag_vs_ft import RAGConfig,CompleteRAGPipeline,RAGStreamLit
 def run():
     # Page config
     st.set_page_config(layout="wide")
