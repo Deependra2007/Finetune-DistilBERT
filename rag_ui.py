@@ -10,7 +10,7 @@ def run():
     with st.container():
         st.subheader("Index Documents")
         uploaded_file = st.file_uploader("Upload .txt or .docx or .pdf files", type=["txt", "docx", "pdf"])
-        file_name = uploaded_file.name 
+        file_name = uploaded_file.name if uploaded_file else ''
         st.text(f"{file_name}")  # Mocked metadata
         col1, col2 = st.columns(2)
         with col1:
