@@ -203,8 +203,10 @@ import json
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple, Union
 from dataclasses import dataclass, asdict
+import nltk
 import warnings
 warnings.filterwarnings("ignore")
+nltk.download('punkt_tab')
 
 # Core ML libraries
 import torch
@@ -1270,13 +1272,36 @@ Top Retrieved Documents:
 # ===============================
 # Entry point for direct execution
 # ===============================
-import nltk
-nltk.download('punkt_tab')
-if __name__ == "__main__":
-    cfg = RAGConfig()
-    pipeline = CompleteRAGPipeline(cfg)
 
-    ui = RAGInterface(pipeline)
-    app = ui.create_gradio_interface()
+class RAGStreamLit:
+    """User interface for the RAG system"""
+
+    def __init__(self, pipeline: CompleteRAGPipeline):
+        self.pipeline = pipeline
+
+    def index_documents(files, chunk_size, chunk_overlap, enable_guardrails):
+           if not files or len(files) == 0:
+                return "No files provided.", "0", "0"
+            paths = [Path(f.name) for f in files]
+            docs = load_files_to_strings(paths)
+            if not docs:
+                return "No readable documents found.", "0", "0"
+
+            # Apply settings
+            self.pipeline.config.chunk_size = int(chunk_size)
+            self.pipeline.config.chunk_overlap = int(chunk_overlap)
+            self.pipeline.config.enable_input_guardrails = bool(enable_guardrails)
+            self.pipeline.config.enable_output_guardrails = bool(enable_guardrails)
+
+            self.pipeline.load_documents(docs)
+            total_chunks = len(self.pipeline.retriever.documents)
+            return f"Indexed {len(docs)} files into {total_chunks} chunks.", str(len(docs)), str(total_chunks)
+
+#if __name__ == "__main__":
+    #cfg = RAGConfig()
+    #pipeline = CompleteRAGPipeline(cfg)
+
+    #ui = RAGInterface(pipeline)
+    #app = ui.create_gradio_interface()
     #app.launch(share=True)   # share=False if running locally
-    app.launch(share=True, inline=False, inbrowser=True, debug=True)
+    #app.launch(share=True, inline=False, inbrowser=True, debug=True)
