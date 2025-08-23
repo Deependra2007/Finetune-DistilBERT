@@ -13,7 +13,7 @@ option = st.selectbox(
 
 if option is not None:
     st.session_state.model = option
-if st.button("Execute") || st.session_state.file_uploaded is not None:
+if st.button("Execute") or st.session_state.file_uploaded is not None:
     if st.session_state.model == "RAG":
         rag_ui.run()
     elif st.session_state.model == "Fine Tune":
