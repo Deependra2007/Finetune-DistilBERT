@@ -1280,20 +1280,20 @@ class RAGStreamLit:
     def index_documents(files, chunk_size, chunk_overlap, enable_guardrails):
            if not files or len(files) == 0:
                 return "No files provided.", "0", "0"
-            paths = [Path(f.name) for f in files]
-            docs = load_files_to_strings(paths)
-            if not docs:
-                return "No readable documents found.", "0", "0"
+           paths = [Path(f.name) for f in files]
+           docs = load_files_to_strings(paths)
+           if not docs:
+               return "No readable documents found.", "0", "0"
 
-            # Apply settings
-            self.pipeline.config.chunk_size = int(chunk_size)
-            self.pipeline.config.chunk_overlap = int(chunk_overlap)
-            self.pipeline.config.enable_input_guardrails = bool(enable_guardrails)
-            self.pipeline.config.enable_output_guardrails = bool(enable_guardrails)
+           # Apply settings
+           self.pipeline.config.chunk_size = int(chunk_size)
+           self.pipeline.config.chunk_overlap = int(chunk_overlap)
+           self.pipeline.config.enable_input_guardrails = bool(enable_guardrails)
+           self.pipeline.config.enable_output_guardrails = bool(enable_guardrails)
 
-            self.pipeline.load_documents(docs)
-            total_chunks = len(self.pipeline.retriever.documents)
-            return f"Indexed {len(docs)} files into {total_chunks} chunks.", str(len(docs)), str(total_chunks)
+           self.pipeline.load_documents(docs)
+           total_chunks = len(self.pipeline.retriever.documents)
+           return f"Indexed {len(docs)} files into {total_chunks} chunks.", str(len(docs)), str(total_chunks)
 
 #if __name__ == "__main__":
     #cfg = RAGConfig()
