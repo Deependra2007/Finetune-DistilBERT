@@ -59,6 +59,7 @@ def run():
 
         if st.button("Ask"):
             result = streamLit.process_query(user_question,guardrails_enabled_q,max_docs)
+            st.write(result)
             with st.spinner("Retrieving and answering..."):
                 time.sleep(3)  # Mocked response time
 
