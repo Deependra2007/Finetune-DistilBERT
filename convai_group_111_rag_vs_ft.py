@@ -263,13 +263,13 @@ def _read_docx(path: Path) -> Tuple[str, List[Dict]]:
     """
     if not HAS_DOCX:
         raise RuntimeError("python-docx is not installed. Please install with: pip install python-docx")
-
+    print(str(path))
     doc = DocxDocument(str(path))
 
     # --- Extract paragraphs ---
     paras = [p.text for p in doc.paragraphs if p.text and p.text.strip()]
     full_text = "\n".join(paras)
-
+    print(full_text)
     # --- Extract tables ---
     tables_json = []
     for table_idx, table in enumerate(doc.tables):
