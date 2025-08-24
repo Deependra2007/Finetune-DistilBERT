@@ -1129,7 +1129,7 @@ class RAGStreamLit:
     def __init__(self, pipeline: CompleteRAGPipeline):
         self.pipeline = pipeline
 
-    def index_documents(files, chunk_size, chunk_overlap, enable_guardrails):
+    def index_documents(self,files, chunk_size, chunk_overlap, enable_guardrails):
            if not files or len(files) == 0:
                 return "No files provided.", "0", "0"
            paths = [Path(f.name) for f in files]
