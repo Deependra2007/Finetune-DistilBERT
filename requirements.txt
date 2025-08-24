@@ -4,6 +4,6 @@ torch==2.5.0
 accelerate==1.10.0
 python-docx
 faiss-cpu
-sentence-transformers
+sentence-transformers=2.3.0
 rank-bm25
 nltk
