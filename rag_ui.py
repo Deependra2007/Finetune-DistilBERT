@@ -103,7 +103,7 @@ def run():
     with st.container():
         st.subheader("Index Documents")
         uploaded_files = st.file_uploader(
-            "Upload .txt, .docx, or .pdf files",
+            "Upload .txt or .docx or .pdf files  or Zip file with csv",
             accept_multiple_files=True,
             type=["txt", "docx", "pdf"]
         )
