@@ -218,7 +218,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import string
-
+nltk.download('punkt_tab')
 # Optional .docx support
 try:
     from docx import Document as DocxDocument
