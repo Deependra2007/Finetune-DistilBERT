@@ -1160,9 +1160,9 @@ class RAGStreamLit:
            self.pipeline.config.enable_input_guardrails = bool(enable_guardrails)
            self.pipeline.config.enable_output_guardrails = bool(enable_guardrails)
            self.pipeline.config.final_retrieval_k = int(max_docs)
-           try:
-               result = self.pipeline.query(query)    
-               return result
+          
+           result = self.pipeline.query(query)    
+           return result
 
 #if __name__ == "__main__":
     #cfg = RAGConfig()
