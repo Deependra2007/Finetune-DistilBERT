@@ -14,6 +14,7 @@ def run():
     # --- Index Documents ---
     cfg = RAGConfig()
     pipeline = CompleteRAGPipeline(cfg)
+    streamLit = RAGStreamLit(pipeline)
     with st.container():
         st.subheader("Index Documents")
         uploaded_files = st.file_uploader("Upload .txt or .docx or .pdf files",accept_multiple_files=True, type=["txt", "docx", "pdf"])
@@ -37,7 +38,6 @@ def run():
         guardrails_enabled = st.checkbox("Enable Guardrails", value=True)
         if st.button("Index Documents"):
             with st.spinner("Indexing..."):
-                streamLit = RAGStreamLit(pipeline)
                 message = streamLit.index_documents(file_paths, chunk_size, chunk_overlap, guardrails_enabled)
                 st.success(message)
 
@@ -58,6 +58,7 @@ def run():
             max_docs = st.slider("Max Retrieved Documents", 1, 10, value=5)
 
         if st.button("Ask"):
+            result = streamLit.process_query(user_question,guardrails_enabled_q,max_docs)
             with st.spinner("Retrieving and answering..."):
                 time.sleep(3)  # Mocked response time
 
