@@ -11,8 +11,10 @@ def run():
     pipeline = CompleteRAGPipeline(cfg)
     with st.container():
         st.subheader("Index Documents")
-        uploaded_file = st.file_uploader("Upload .txt or .docx or .pdf files", type=["txt", "docx", "pdf"])
-        file_name = uploaded_file.name if uploaded_file else ''
+        uploaded_file = st.file_uploader("Upload .txt or .docx or .pdf files",accept_multiple_files=true, type=["txt", "docx", "pdf"])
+        if uploaded_files:
+            for file in uploaded_files:
+                file_name = file.name if uploaded_file else ''
         st.text(f"{file_name}")  # Mocked metadata
         col1, col2 = st.columns(2)
         with col1:
