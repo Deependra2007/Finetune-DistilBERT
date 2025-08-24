@@ -193,7 +193,6 @@ RAG-Based QA System with Guardrails (Colab Notebook)
 # Install and Import Libraries
 """
 
-from tkinter.constants import NONE
 import os
 import re
 import time
