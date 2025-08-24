@@ -174,8 +174,8 @@ def run():
                             st.info(response.get('answer', 'No answer could be generated.'))
 
                             res_col1, res_col2, res_col3 = st.columns(3)
-                            #res_col1.metric("Confidence", f"{response.get('confidence', 0.0):.2f}")
-                            res_col1.metric("Confidence", "0.5")
+                            res_col1.metric("Confidence", f"{response.get('confidence', 0.0):.2f}")
+                            #res_col1.metric("Confidence", "0.5")
                             res_col2.metric("Method Used", response.get('method', 'RAG'))
                             res_col3.metric("Response Time", f"{response.get('response_time', 0.0):.2f}s")
 
