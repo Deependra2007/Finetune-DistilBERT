@@ -1162,7 +1162,7 @@ class CompleteRAGPipeline:
         self.is_initialized = True
         print("Documents loaded and indexed")
         
-     def run_indexing(self, paths: List[Path], chunk_size: int, chunk_overlap: int):
+    def run_indexing(self, paths: List[Path], chunk_size: int, chunk_overlap: int):
         """
         Loads documents from file paths, processes them, builds the search indices,
         and returns statistics about the operation.
