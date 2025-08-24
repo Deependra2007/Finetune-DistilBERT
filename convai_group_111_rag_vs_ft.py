@@ -221,7 +221,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import string
-
+import tempfile
 
 import json
 from pathlib import Path
@@ -252,15 +252,16 @@ except LookupError:
     nltk.download('stopwords', quiet=True)
 
 
-from google.colab import drive
+#from google.colab import drive
 from pathlib import Path
 
 # Mount Google Drive
-drive.mount('/content/drive')
+#drive.mount('/content/drive')
 
 # Example: set a path inside your Google Drive
-drive_path = Path('/content/drive/MyDrive/ConvAI_Group_111_RAG')  # create or use a folder in MyDrive
-drive_path.mkdir(parents=True, exist_ok=True)  # make sure the folder exists
+drive_path =  tempfile.TemporaryDirectory()
+#Path('/content/drive/MyDrive/ConvAI_Group_111_RAG')  # create or use a folder in MyDrive
+#drive_path.mkdir(parents=True, exist_ok=True)  # make sure the folder exists
 
 
 def _read_txt(path: Path) -> str:
