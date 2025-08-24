@@ -1,5 +1,5 @@
 import streamlit as st
-from transformers import pipeline
+from transformers import pipeline,AutoModelForQuestionAnswering,AutoTokenizer
 
 # Initialize QA pipeline
 @st.cache_resource
