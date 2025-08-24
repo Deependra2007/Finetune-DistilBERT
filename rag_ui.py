@@ -5,6 +5,7 @@ from docx import Document as DocxDocument
 from io import BytesIO
 from pathlib import Path
 import tempfile
+import pathlib
 def run():
     # Page config
     st.set_page_config(layout="wide")
