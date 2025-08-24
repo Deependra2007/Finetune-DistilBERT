@@ -358,6 +358,7 @@ def load_files_to_strings(paths: List[Path]) -> List[Dict]:
                 text = _read_txt(p)
                 docs.append({"text": text, "metadata": {"source": str(p)}, "score": 0.0})
             elif suffix == ".docx":
+                print("Docx file found in list")
                 full_text, tables_json = _read_docx(p)
                 docs.append({"text": full_text, "metadata": {"source": str(p)}, "score": 0.0})
                 # Include table rows as separate entries
