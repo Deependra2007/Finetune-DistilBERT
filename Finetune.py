@@ -1,6 +1,6 @@
 import streamlit as st
 from transformers import pipeline,AutoModelForQuestionAnswering,AutoTokenizer
-
+import torch
 # Initialize QA pipeline
 @st.cache_resource
 def load_qa_pipeline():
