@@ -4,7 +4,8 @@ from transformers import pipeline
 # Initialize QA pipeline
 @st.cache_resource
 def load_qa_pipeline():
-    model_id = "deependra-2007/distilbert-qa-finetuned"
+    #model_id = "deependra-2007/distilbert-qa-finetuned"
+    model_id = "distilbert-base-cased-distilled-squad"
     return pipeline("question-answering", model=model_id, tokenizer=model_id,device=-1)
 def run():
     qa_pipeline = load_qa_pipeline()
