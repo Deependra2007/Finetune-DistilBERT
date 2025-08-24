@@ -203,6 +203,7 @@ from typing import List, Dict, Optional, Tuple, Union
 from dataclasses import dataclass, asdict
 import nltk
 import warnings
+import streamlit as st
 warnings.filterwarnings("ignore")
 nltk.download('punkt_tab')
 
@@ -263,13 +264,13 @@ def _read_docx(path: Path) -> Tuple[str, List[Dict]]:
     """
     if not HAS_DOCX:
         raise RuntimeError("python-docx is not installed. Please install with: pip install python-docx")
-    print(str(path))
+    st.write(str(path))
     doc = DocxDocument(str(path))
 
     # --- Extract paragraphs ---
     paras = [p.text for p in doc.paragraphs if p.text and p.text.strip()]
     full_text = "\n".join(paras)
-    print(full_text)
+    st.write(full_text)
     # --- Extract tables ---
     tables_json = []
     for table_idx, table in enumerate(doc.tables):
