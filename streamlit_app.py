@@ -13,10 +13,10 @@ option = st.selectbox(
 
 if option is not None:
     st.session_state.model = option
-if st.button("Execute") or st.session_state.model is not None:
-    if st.session_state.model == "RAG":
+if st.button("Execute"):
+    if option == "RAG":
         rag_ui.run()
-    elif st.session_state.model == "Fine Tune":
+    elif option == "Fine Tune":
         Finetune.run()
     else:
         st.warning("Please select a valid option before clicking Run.")
