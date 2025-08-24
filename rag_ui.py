@@ -15,15 +15,15 @@ def run():
     with st.container():
         st.subheader("Index Documents")
         uploaded_files = st.file_uploader("Upload .txt or .docx or .pdf files",accept_multiple_files=True, type=["txt", "docx", "pdf"])
-        temp_dir = Path("./temp_uploaded_files")
-        temp_dir.mkdir(exist_ok=True)
+        temp_dir = tempfile.TemporaryDirectory()
+        st.write(temp_dir.name)
         if uploaded_files:
             for file in uploaded_files:
                 file_name = file.name if file else ''
                 st.text(f"{file_name}") 
             file_paths = []
             for uploaded_file in uploaded_files:
-                 temp_path = temp_dir / uploaded_file.name
+                 temp_path = pathlib.Path(temp_dir.name)/ uploaded_file.name
                  st.text(f"{temp_path}") 
                  with open(temp_path, "wb") as f:
                      f.write(uploaded_file.getbuffer())
