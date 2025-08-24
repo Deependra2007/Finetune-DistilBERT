@@ -406,39 +406,42 @@ def save_docs_to_drive(text_docs: List[Dict], json_docs: List[Dict], drive_path:
     print(f"Saved structured table docs to {json_path}")
 
 
-def load_files_to_strings(paths: List[Path], drive_path: Path) -> List[Dict]:
+def load_files_to_strings(paths: List[Path]) -> List[Dict]:
     text_docs, json_docs = [], []
-
+ 
     for p in paths:
         suffix = p.suffix.lower()
         try:
             if suffix == ".txt":
                 text = _read_txt(p)
                 text_docs.append({
-                    "text": text,
+                    "id": f"{p.stem}-text",
+                    "content": text,
                     "metadata": {"source": p.name, "type": "text"},
                     "score": 0.0
                 })
-
+ 
             elif suffix == ".docx":
                 full_text, tables_json = _read_docx(p)
                 text_docs.append({
-                    "text": full_text,
+                    "id": f"{p.stem}-text",
+                    "content": full_text,
                     "metadata": {"source": p.name, "type": "text"},
                     "score": 0.0
                 })
                 for idx, row in enumerate(tables_json):
                     json_docs.append({
                         "id": f"{p.stem}-table-{idx}",
-                        "content": row,  # structured dict
+                        "content": row,
                         "metadata": {"source": p.name, "type": "table"},
                         "score": 0.0
                     })
-
+ 
             elif suffix == ".pdf":
                 full_text, tables = _read_pdf(p)
                 text_docs.append({
-                    "text": full_text,
+                    "id": f"{p.stem}-text",
+                    "content": full_text,
                     "metadata": {"source": p.name, "type": "text"},
                     "score": 0.0
                 })
@@ -449,11 +452,12 @@ def load_files_to_strings(paths: List[Path], drive_path: Path) -> List[Dict]:
                         "metadata": {"source": p.name, "type": "table"},
                         "score": 0.0
                     })
-
+ 
             elif suffix == ".zip":
                 full_text, rows_json = _read_zip_csv(p)
                 text_docs.append({
-                    "text": full_text,
+                    "id": f"{p.stem}-text",
+                    "content": full_text,
                     "metadata": {"source": p.name, "type": "text"},
                     "score": 0.0
                 })
@@ -464,14 +468,11 @@ def load_files_to_strings(paths: List[Path], drive_path: Path) -> List[Dict]:
                         "metadata": {"source": p.name, "type": "table"},
                         "score": 0.0
                     })
-
+ 
         except Exception as e:
             print(f"Failed to read {p}: {e}")
-
-    # --- Save separately to Google Drive ---
-    save_docs_to_drive(text_docs, json_docs, drive_path)
-
-    # --- Combine before returning ---
+ 
+    # Instead of saving, just return
     return text_docs + json_docs
 
 def extract_numeric_answer(query: str, retrieved_docs: List[Dict]) -> Optional[Tuple[str, str]]:
@@ -1312,7 +1313,7 @@ class CompleteRAGPipeline:
 
         # 1. Load documents from the file paths using the global function
         # This function should be available in your script
-        raw_docs = load_files_to_strings(paths,drive_path)
+        raw_docs = load_files_to_strings(paths)
         if not raw_docs:
             raise ValueError("No readable documents were found at the specified paths.")
 
