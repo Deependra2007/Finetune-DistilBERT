@@ -24,6 +24,7 @@ def run():
             file_paths = []
             for uploaded_file in uploaded_files:
                  temp_path = temp_dir / uploaded_file.name
+                 st.text(f"{temp_path}") 
                  with open(temp_path, "wb") as f:
                      f.write(uploaded_file.getbuffer())
                  file_paths.append(temp_path)        
