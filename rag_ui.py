@@ -19,11 +19,12 @@ def run():
         uploaded_files = st.file_uploader("Upload .txt or .docx or .pdf files",accept_multiple_files=True, type=["txt", "docx", "pdf"])
         temp_dir = tempfile.TemporaryDirectory()
         st.write(temp_dir.name)
+        file_paths = []
         if uploaded_files:
             for file in uploaded_files:
                 file_name = file.name if file else ''
                 st.text(f"{file_name}") 
-            file_paths = []
+            
             for uploaded_file in uploaded_files:
                  temp_path = pathlib.Path(temp_dir.name)/ uploaded_file.name
                  st.text(f"{temp_path}") 
@@ -41,7 +42,7 @@ def run():
         if st.button("Index Documents"):
             with st.spinner("Indexing..."):
                 streamLit = RAGStreamLit(pipeline)
-                message = streamLit.index_documents(uploaded_files, chunk_size, chunk_overlap, guardrails_enabled)
+                message = streamLit.index_documents(file_paths, chunk_size, chunk_overlap, guardrails_enabled)
                 st.success(message)
 
         with st.expander("Indexing Status", expanded=True):
