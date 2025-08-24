@@ -31,8 +31,6 @@ def run():
                  with open(temp_path, "wb") as f:
                      f.write(uploaded_file.getbuffer())
                  file_paths.append(temp_path)        
-        paths = [Path(f.name) for f in uploaded_files]
-        doc = DocxDocument(file_paths[0])        
         col1, col2 = st.columns(2)
         with col1:
             chunk_size = st.text_input("Chunk Size (words)", value="300")
