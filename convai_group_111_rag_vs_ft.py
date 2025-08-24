@@ -1134,6 +1134,8 @@ class RAGStreamLit:
            if not files or len(files) == 0:
                 return "No files provided.", "0", "0"
            paths = [Path(f.name) for f in files]
+           print("provided path for files")
+           print(paths)
            docs = load_files_to_strings(paths)
            if not docs:
                return "No readable documents found.", "0", "0"
