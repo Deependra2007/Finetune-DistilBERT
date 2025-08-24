@@ -6,15 +6,15 @@ from io import BytesIO
 from pathlib import Path
 import tempfile
 import pathlib
+cfg = RAGConfig()
+pipeline = CompleteRAGPipeline(cfg)
+streamLit = RAGStreamLit(pipeline)
 def run():
     # Page config
     st.set_page_config(layout="wide")
     st.title("Advanced RAG System with Multi-Stage Retrieval")
     st.caption("This system uses Multi-Stage Retrieval: Stage 1 hybrid search (Dense + BM25), Stage 2 cross-encoder re-ranking. Includes guardrails and performance monitoring.")
     # --- Index Documents ---
-    cfg = RAGConfig()
-    pipeline = CompleteRAGPipeline(cfg)
-    streamLit = RAGStreamLit(pipeline)
     with st.container():
         st.subheader("Index Documents")
         uploaded_files = st.file_uploader("Upload .txt or .docx or .pdf files",accept_multiple_files=True, type=["txt", "docx", "pdf"])
