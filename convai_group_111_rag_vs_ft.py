@@ -716,6 +716,8 @@ class MultiStageRetriever:
         self.sparse_index = BM25Okapi(tokenized_docs)
 
         print(f"Indices built: {len(documents)} documents indexed")
+        return len(documents)
+    
 
     def _revenue_boost(self, query: str, docs: List[Dict]) -> List[Dict]:
         """Boost docs mentioning revenue + numbers when query relates to revenue/financials"""
@@ -1159,7 +1161,43 @@ class CompleteRAGPipeline:
         self.retriever.build_indices(chunked_docs, metadata=None)
         self.is_initialized = True
         print("Documents loaded and indexed")
+        
+     def run_indexing(self, paths: List[Path], chunk_size: int, chunk_overlap: int):
+        """
+        Loads documents from file paths, processes them, builds the search indices,
+        and returns statistics about the operation.
+        """
+        print(f"Starting indexing process for {len(paths)} files...")
 
+        # 1. Load documents from the file paths using the global function
+        # This function should be available in your script
+        raw_docs = load_files_to_strings(paths)
+        if not raw_docs:
+            raise ValueError("No readable documents were found at the specified paths.")
+
+        # 2. Extract text and perform chunking
+        all_chunks = []
+        for doc in raw_docs:
+            # The load_files_to_strings function returns a list of dictionaries
+            if 'text' in doc and isinstance(doc['text'], str):
+                # Use the dynamic chunk_size and chunk_overlap passed from the UI
+                chunks = _chunk_text(doc['text'], chunk_size, chunk_overlap)
+                all_chunks.extend(chunks)
+
+        print(f"Created {len(all_chunks)} chunks for indexing.")
+
+        # 3. Build the indices using the retriever component
+        # This calls the build_indices method you updated earlier to return the count
+        chunk_count = self.retriever.build_indices(all_chunks, metadata=None)
+        self.is_initialized = True
+        print("Documents have been successfully indexed.")
+
+        # 4. Return the final statistics in a dictionary for the Streamlit UI
+        return {
+            "message": f"Successfully indexed {len(paths)} files into {chunk_count} chunks.",
+            "files_indexed": len(paths),
+            "chunks_created": chunk_count
+        }
     def query(self, user_query: str) -> Dict:
         """Process a complete query through the RAG pipeline"""
 
@@ -1270,46 +1308,6 @@ class CompleteRAGPipeline:
             'success_rate': self.stats['successful_queries'] / max(self.stats['total_queries'], 1),
             'guardrail_violation_rate': self.stats['guardrail_violations'] / max(self.stats['total_queries'], 1)
         }
-
-class RAGStreamLit:
-    """User interface for the RAG system"""
-
-    def __init__(self, pipeline: CompleteRAGPipeline):
-        self.pipeline = pipeline
-
-    def index_documents(self,files, chunk_size, chunk_overlap, enable_guardrails):
-           if not files or len(files) == 0:
-                return "No files provided.", "0", "0"
-          # paths = [Path(f.name) for f in files]
-           print("provided path for files")
-           print(files)
-           docs = load_files_to_strings(files)
-           if not docs:
-               return "No readable documents found.", "0", "0"
-
-           # Apply settings
-           self.pipeline.config.chunk_size = int(chunk_size)
-           self.pipeline.config.chunk_overlap = int(chunk_overlap)
-           self.pipeline.config.enable_input_guardrails = bool(enable_guardrails)
-           self.pipeline.config.enable_output_guardrails = bool(enable_guardrails)
-
-           self.pipeline.load_documents(docs)
-           total_chunks = len(self.pipeline.retriever.documents)
-           return f"Indexed {len(docs)} files into {total_chunks} chunks.", str(len(docs)), str(total_chunks)
-        
-    def process_query(self, query, enable_guardrails, max_docs):
-           if not query or not query.strip():
-               return "Please enter a query.", 0.0, "No method", "0.00s", "No details"
-           original_guardrails_in = self.pipeline.config.enable_input_guardrails
-           original_guardrails_out = self.pipeline.config.enable_output_guardrails
-           original_k = self.pipeline.config.final_retrieval_k
-
-           self.pipeline.config.enable_input_guardrails = bool(enable_guardrails)
-           self.pipeline.config.enable_output_guardrails = bool(enable_guardrails)
-           self.pipeline.config.final_retrieval_k = int(max_docs)
-          
-           result = self.pipeline.query(query)    
-           return result
 
 #if __name__ == "__main__":
     #cfg = RAGConfig()
