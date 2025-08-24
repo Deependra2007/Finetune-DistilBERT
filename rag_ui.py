@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 from convai_group_111_rag_vs_ft import RAGConfig,CompleteRAGPipeline,RAGStreamLit
-from docx import Document
+from docx import Document as DocxDocument
 from io import BytesIO
 from pathlib import Path
 def run():
