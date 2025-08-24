@@ -202,6 +202,7 @@ import json
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple, Union
 from dataclasses import dataclass, asdict
+import zipfile
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -220,7 +221,11 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import string
-nltk.download('punkt_tab')
+
+
+import json
+from pathlib import Path
+from typing import List, Dict
 
 
 # Optional .docx support
@@ -245,6 +250,17 @@ try:
     nltk.data.find('corpora/stopwords')
 except LookupError:
     nltk.download('stopwords', quiet=True)
+
+
+from google.colab import drive
+from pathlib import Path
+
+# Mount Google Drive
+drive.mount('/content/drive')
+
+# Example: set a path inside your Google Drive
+drive_path = Path('/content/drive/MyDrive/ConvAI_Group_111_RAG')  # create or use a folder in MyDrive
+drive_path.mkdir(parents=True, exist_ok=True)  # make sure the folder exists
 
 
 def _read_txt(path: Path) -> str:
@@ -290,6 +306,46 @@ def _read_docx(path: Path) -> Tuple[str, List[Dict]]:
     return full_text, tables_json
 
 
+def _read_zip_csv(path: Path) -> Tuple[str, List[Dict]]:
+    """
+    Extract and combine all CSV files from a zip archive.
+    Returns:
+        full_text (str): combined CSV as plain text
+        rows_json (List[Dict]): structured row data
+    """
+    rows_json = []
+    dfs = []
+
+    with zipfile.ZipFile(path, "r") as z:
+        for name in z.namelist():
+            if name.lower().endswith(".csv"):
+                with z.open(name) as f:
+                    try:
+                        df = pd.read_csv(f, encoding="utf-8", on_bad_lines="skip")
+                    except Exception:
+                        f.seek(0)
+                        df = pd.read_csv(f, encoding="latin-1", on_bad_lines="skip")
+
+                    dfs.append(df)
+
+                    # convert rows into JSON-like dicts
+                    for idx, row in df.iterrows():
+                        row_json = row.to_dict()
+                        row_json.update({
+                            "file": name,
+                            "row_index": idx,
+                            "type": "csv_row"
+                        })
+                        rows_json.append(row_json)
+
+    if dfs:
+        combined_df = pd.concat(dfs, ignore_index=True)
+        full_text = combined_df.to_csv(index=False)
+    else:
+        full_text = ""
+
+    return full_text, rows_json
+
 
 
 
@@ -325,33 +381,96 @@ def _read_pdf(path: Path) -> Tuple[str, List[Dict]]:
 
     return "\n".join(text), tables_json
 
-def load_files_to_strings(paths: List[Path]) -> List[Dict]:
-    docs = []
+
+def save_docs_to_drive(text_docs: List[Dict], json_docs: List[Dict], drive_path: Path):
+    """
+    Save text-based and JSON-based docs separately to Google Drive.
+    Each file will be saved as JSONL for easy reloading.
+    """
+    text_path = drive_path / "texts.jsonl"
+    json_path = drive_path / "tables.jsonl"
+
+    # Save text docs
+    with open(text_path, "w", encoding="utf-8") as f:
+        for doc in text_docs:
+            f.write(json.dumps(doc, ensure_ascii=False) + "\n")
+
+    # Save JSON docs (structured rows)
+    with open(json_path, "w", encoding="utf-8") as f:
+        for doc in json_docs:
+            f.write(json.dumps(doc, ensure_ascii=False) + "\n")
+
+    print(f"Saved text docs to {text_path}")
+    print(f"Saved structured table docs to {json_path}")
+
+
+def load_files_to_strings(paths: List[Path], drive_path: Path) -> List[Dict]:
+    text_docs, json_docs = [], []
+
     for p in paths:
         suffix = p.suffix.lower()
         try:
             if suffix == ".txt":
                 text = _read_txt(p)
-                docs.append({"text": text, "metadata": {"source": str(p)}, "score": 0.0})
+                text_docs.append({
+                    "text": text,
+                    "metadata": {"source": p.name, "type": "text"},
+                    "score": 0.0
+                })
+
             elif suffix == ".docx":
                 full_text, tables_json = _read_docx(p)
-                docs.append({"text": full_text, "metadata": {"source": str(p)}, "score": 0.0})
-                # Include table rows as separate entries
-                for row in tables_json:
-                    row_text = ' | '.join(f'{k}: {v}' for k, v in row.items() if k not in ['table_index', 'row_index', 'type', 'source'])
-                    docs.append({"text": row_text, "metadata": {"source": str(p)}, "score": 0.0})
+                text_docs.append({
+                    "text": full_text,
+                    "metadata": {"source": p.name, "type": "text"},
+                    "score": 0.0
+                })
+                for idx, row in enumerate(tables_json):
+                    json_docs.append({
+                        "id": f"{p.stem}-table-{idx}",
+                        "content": row,  # structured dict
+                        "metadata": {"source": p.name, "type": "table"},
+                        "score": 0.0
+                    })
+
             elif suffix == ".pdf":
-                text = _read_pdf(p)
-                docs.append({"text": text, "metadata": {"source": str(p)}, "score": 0.0})
-                for row in tables:  # optional: index table rows
-                   row_text = ' | '.join(f'{k}: {v}' for k, v in row.items() if v is not None)
-                   docs.append({"text": row_text, "metadata": {"source": str(p)}, "score": 0.0})
-            else:
-                pass
+                full_text, tables = _read_pdf(p)
+                text_docs.append({
+                    "text": full_text,
+                    "metadata": {"source": p.name, "type": "text"},
+                    "score": 0.0
+                })
+                for idx, row in enumerate(tables):
+                    json_docs.append({
+                        "id": f"{p.stem}-table-{idx}",
+                        "content": row,
+                        "metadata": {"source": p.name, "type": "table"},
+                        "score": 0.0
+                    })
+
+            elif suffix == ".zip":
+                full_text, rows_json = _read_zip_csv(p)
+                text_docs.append({
+                    "text": full_text,
+                    "metadata": {"source": p.name, "type": "text"},
+                    "score": 0.0
+                })
+                for idx, row in enumerate(rows_json):
+                    json_docs.append({
+                        "id": f"{p.stem}-table-{idx}",
+                        "content": row,
+                        "metadata": {"source": p.name, "type": "table"},
+                        "score": 0.0
+                    })
+
         except Exception as e:
             print(f"Failed to read {p}: {e}")
-    return docs
 
+    # --- Save separately to Google Drive ---
+    save_docs_to_drive(text_docs, json_docs, drive_path)
+
+    # --- Combine before returning ---
+    return text_docs + json_docs
 
 def extract_numeric_answer(query: str, retrieved_docs: List[Dict]) -> Optional[Tuple[str, str]]:
     """
@@ -1191,7 +1310,7 @@ class CompleteRAGPipeline:
 
         # 1. Load documents from the file paths using the global function
         # This function should be available in your script
-        raw_docs = load_files_to_strings(paths)
+        raw_docs = load_files_to_strings(paths,drive_path)
         if not raw_docs:
             raise ValueError("No readable documents were found at the specified paths.")
 
