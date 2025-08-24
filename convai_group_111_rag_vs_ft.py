@@ -1149,6 +1149,20 @@ class RAGStreamLit:
            self.pipeline.load_documents(docs)
            total_chunks = len(self.pipeline.retriever.documents)
            return f"Indexed {len(docs)} files into {total_chunks} chunks.", str(len(docs)), str(total_chunks)
+        
+    def process_query(self, query, enable_guardrails, max_docs):
+            if not query or not query.strip():
+                return "Please enter a query.", 0.0, "No method", "0.00s", "No details"
+            original_guardrails_in = self.pipeline.config.enable_input_guardrails
+            original_guardrails_out = self.pipeline.config.enable_output_guardrails
+            original_k = self.pipeline.config.final_retrieval_k
+
+            self.pipeline.config.enable_input_guardrails = bool(enable_guardrails)
+            self.pipeline.config.enable_output_guardrails = bool(enable_guardrails)
+            self.pipeline.config.final_retrieval_k = int(max_docs)
+            try:
+                result = self.pipeline.query(query)    
+            return result
 
 #if __name__ == "__main__":
     #cfg = RAGConfig()
