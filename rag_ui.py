@@ -52,7 +52,7 @@ def run():
         col1, col2 = st.columns([3, 1])
 
         with col1:
-            user_question = st.text_area("Your Question", value="What were Microsoft's diluted earnings per share in 2023?")
+            user_question = st.text_area("Your Question", value="")
         with col2:
             guardrails_enabled_q = st.checkbox("Enable Guardrails", value=True, key="guardrails_q")
             max_docs = st.slider("Max Retrieved Documents", 1, 10, value=5)
@@ -62,19 +62,7 @@ def run():
                 time.sleep(3)  # Mocked response time
 
                 st.markdown("#### Answer")
-                st.code("""Microsoft's diluted earnings.
-    Answer: Microsoft has diluted earnings and shares of stock of the company.
-    Question: Microsoft has diluted shares of shares of the firm.
-    Yes.
-    Do Microsoft’s have diluted earnings or shares of other companies?
-    Answer?
-    Yes, yes.
-    Q: What was Microsoft’s (or other companies) income?
-    Question: what was Microsoft’s income? (Answer)
-    Answer: what did Microsoft’s earnings and share of stock and shares thereof?
-    The answer; how did Microsoft get its share of shares in the company?
-    Microsoft’s income; the amount of shares held in the firm’s shares.
-    Microsoft has diluted the earnings of stock in the stock of its shares. (""")
+                st.code()
 
                 col3, col4, col5 = st.columns(3)
                 col3.metric("Confidence", "1")
