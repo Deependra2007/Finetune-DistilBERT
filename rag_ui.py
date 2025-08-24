@@ -4,6 +4,7 @@ from convai_group_111_rag_vs_ft import RAGConfig,CompleteRAGPipeline,RAGStreamLi
 from docx import Document as DocxDocument
 from io import BytesIO
 from pathlib import Path
+import tempfile
 def run():
     # Page config
     st.set_page_config(layout="wide")
