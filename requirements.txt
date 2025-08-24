@@ -1,6 +1,6 @@
 streamlit==1.48.1
 transformers==4.55.4
-torch==2.1.2
+torch==2.1.7
 accelerate==1.10.0
 python-docx
 faiss-cpu
