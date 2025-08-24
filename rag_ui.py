@@ -15,12 +15,20 @@ def run():
     with st.container():
         st.subheader("Index Documents")
         uploaded_files = st.file_uploader("Upload .txt or .docx or .pdf files",accept_multiple_files=True, type=["txt", "docx", "pdf"])
+        temp_dir = Path("./temp_uploaded_files")
+        temp_dir.mkdir(exist_ok=True)
         if uploaded_files:
             for file in uploaded_files:
                 file_name = file.name if file else ''
                 st.text(f"{file_name}") 
+            file_paths = []
+            for uploaded_file in uploaded_files:
+                 temp_path = temp_dir / uploaded_file.name
+                 with open(temp_path, "wb") as f:
+                     f.write(uploaded_file.getbuffer())
+                 file_paths.append(temp_path)        
         paths = [Path(f.name) for f in uploaded_files]
-        doc = DocxDocument(str(paths[0]))        
+        doc = DocxDocument(file_paths[0])        
         col1, col2 = st.columns(2)
         with col1:
             chunk_size = st.text_input("Chunk Size (words)", value="300")
