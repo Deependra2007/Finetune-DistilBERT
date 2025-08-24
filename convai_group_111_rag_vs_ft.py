@@ -270,7 +270,6 @@ def _read_docx(path: Path) -> Tuple[str, List[Dict]]:
     # --- Extract paragraphs ---
     paras = [p.text for p in doc.paragraphs if p.text and p.text.strip()]
     full_text = "\n".join(paras)
-    st.write(full_text)
     # --- Extract tables ---
     tables_json = []
     for table_idx, table in enumerate(doc.tables):
