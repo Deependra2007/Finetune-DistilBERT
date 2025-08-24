@@ -193,8 +193,6 @@ RAG-Based QA System with Guardrails (Colab Notebook)
 # Install and Import Libraries
 """
 
-!pip -q install gradio pdfplumber python-docx faiss-cpu sentence-transformers transformers rank-bm25
-
 from tkinter.constants import NONE
 import os
 import re
