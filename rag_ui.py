@@ -11,7 +11,7 @@ def run():
     pipeline = CompleteRAGPipeline(cfg)
     with st.container():
         st.subheader("Index Documents")
-        uploaded_file = st.file_uploader("Upload .txt or .docx or .pdf files",accept_multiple_files=True, type=["txt", "docx", "pdf"])
+        uploaded_files = st.file_uploader("Upload .txt or .docx or .pdf files",accept_multiple_files=True, type=["txt", "docx", "pdf"])
         if uploaded_files:
             for file in uploaded_files:
                 file_name = file.name if uploaded_file else ''
@@ -25,7 +25,7 @@ def run():
         if st.button("Index Documents"):
             with st.spinner("Indexing..."):
                 streamLit = RAGStreamLit(pipeline)
-                message = streamLit.index_documents(uploaded_file, chunk_size, chunk_overlap, guardrails_enabled)
+                message = streamLit.index_documents(uploaded_files, chunk_size, chunk_overlap, guardrails_enabled)
                 st.success(message)
 
         with st.expander("Indexing Status", expanded=True):
