@@ -18,7 +18,6 @@ def run():
         st.subheader("Index Documents")
         uploaded_files = st.file_uploader("Upload .txt or .docx or .pdf files",accept_multiple_files=True, type=["txt", "docx", "pdf"])
         temp_dir = tempfile.TemporaryDirectory()
-        st.write(temp_dir.name)
         file_paths = []
         if uploaded_files:
             for file in uploaded_files:
@@ -27,7 +26,6 @@ def run():
             
             for uploaded_file in uploaded_files:
                  temp_path = pathlib.Path(temp_dir.name)/ uploaded_file.name
-                 st.text(f"{temp_path}") 
                  with open(temp_path, "wb") as f:
                      f.write(uploaded_file.getbuffer())
                  file_paths.append(temp_path)        
