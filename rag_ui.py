@@ -14,7 +14,7 @@ def run():
         uploaded_files = st.file_uploader("Upload .txt or .docx or .pdf files",accept_multiple_files=True, type=["txt", "docx", "pdf"])
         if uploaded_files:
             for file in uploaded_files:
-                file_name = file.name if uploaded_file else ''
+                file_name = file.name if file else ''
                 st.text(f"{file_name}") 
         col1, col2 = st.columns(2)
         with col1:
