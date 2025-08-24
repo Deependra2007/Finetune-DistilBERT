@@ -18,13 +18,6 @@ def run():
             for file in uploaded_files:
                 file_name = file.name if file else ''
                 st.text(f"{file_name}") 
-                bytes_data = file.getvalue()
-                doc_file = BytesIO(bytes_data)
-                document = Document(doc_file)
-                st.subheader("Document Content:")
-                # Display paragraphs from the document
-                for paragraph in document.paragraphs:
-                    st.write(paragraph.text)
         col1, col2 = st.columns(2)
         with col1:
             chunk_size = st.text_input("Chunk Size (words)", value="300")
