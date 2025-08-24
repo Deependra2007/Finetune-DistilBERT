@@ -18,6 +18,8 @@ def run():
             for file in uploaded_files:
                 file_name = file.name if file else ''
                 st.text(f"{file_name}") 
+        paths = [Path(f.name) for f in uploaded_files]
+        doc = DocxDocument(str(paths[0))        
         col1, col2 = st.columns(2)
         with col1:
             chunk_size = st.text_input("Chunk Size (words)", value="300")
