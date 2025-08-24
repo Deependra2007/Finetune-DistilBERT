@@ -759,17 +759,17 @@ class MultiStageRetriever:
 
             # Look for revenue + number in same chunk
             if re.search(r"\brevenue\b", text, re.IGNORECASE) and re.search(r"[\$€₹]?\s?\d[\d,\.]+\s?(million|billion|trillion)?", text, re.IGNORECASE):
-                score += 5.0  # strong boost
+                score += 0.05  # strong boost
 
 
             # --- Case 2: Table-style entries (e.g. "Total revenue .... 211,000,000") ---
             elif re.search(r"(total\s+)?revenue", text, re.IGNORECASE) and re.search(r"\d{3,}(?:,\d{3})*(?:\.\d+)?",text, re.IGNORECASE):
-                score += 4.0
+                score += 0.04
 
 
             # Slight bump for any financial keyword
             elif re.search(r"\b(income|profit|sales|total)\b", text, re.IGNORECASE):
-                score += 2.0
+                score += 0.02
 
             d['score'] = score  # ensure score is always set
             boosted.append({**d, "score": score})
