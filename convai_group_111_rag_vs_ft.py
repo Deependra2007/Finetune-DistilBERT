@@ -260,7 +260,7 @@ from pathlib import Path
 
 # Example: set a path inside your Google Drive
 temp_dir =  tempfile.TemporaryDirectory()
-drive_path = pathlib.Path(temp_dir.name)
+drive_path = Path(temp_dir.name)
 #Path('/content/drive/MyDrive/ConvAI_Group_111_RAG')  # create or use a folder in MyDrive
 #drive_path.mkdir(parents=True, exist_ok=True)  # make sure the folder exists
 
