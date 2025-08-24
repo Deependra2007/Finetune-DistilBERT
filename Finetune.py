@@ -6,7 +6,6 @@ from transformers import pipeline
 def load_qa_pipeline():
     model_id = "deependra-2007/distilbert-qa-finetuned"
     return pipeline("question-answering", model=model_id, tokenizer=model_id,device=-1)
-@st.cache_resource
 def run():
     qa_pipeline = load_qa_pipeline()
     # Streamlit App
