@@ -544,7 +544,7 @@ class MultiStageRetriever:
 
         print("Loading retrieval models...")
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.embedding_model = SentenceTransformer(config.embedding_model, device=device)
+        self.embedding_model = SentenceTransformer(config.embedding_model, device='cpu')
         self.cross_encoder = CrossEncoder(config.cross_encoder_model, device=device)
 
         self.dense_index = None
