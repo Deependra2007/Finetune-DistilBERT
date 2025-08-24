@@ -3,6 +3,7 @@ import time
 from convai_group_111_rag_vs_ft import RAGConfig,CompleteRAGPipeline,RAGStreamLit
 from docx import Document
 from io import BytesIO
+from pathlib import Path
 def run():
     # Page config
     st.set_page_config(layout="wide")
