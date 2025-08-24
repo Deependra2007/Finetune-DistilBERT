@@ -1,6 +1,7 @@
-streamlit
-transformers
-torch
+streamlit==1.35.0
+transformers==4.39.3
+torch==2.1.2
+accelerate==0.27.2
 python-docx
 faiss-cpu
 sentence-transformers
