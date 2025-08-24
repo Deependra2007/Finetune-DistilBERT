@@ -105,7 +105,7 @@ def run():
         uploaded_files = st.file_uploader(
             "Upload .txt or .docx or .pdf files  or Zip file with csv",
             accept_multiple_files=True,
-            type=["txt", "docx", "pdf"]
+            type=["txt", "docx", "pdf","zip"]
         )
         
         col1, col2 = st.columns(2)
