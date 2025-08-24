@@ -213,9 +213,6 @@ from sentence_transformers import SentenceTransformer, CrossEncoder
 import faiss
 from rank_bm25 import BM25Okapi
 
-# UI libraries
-import gradio as gr
-
 # Text processing
 import nltk
 from nltk.corpus import stopwords
